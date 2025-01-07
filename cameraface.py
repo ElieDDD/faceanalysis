@@ -38,6 +38,8 @@ for i, image_file in enumerate(image_files):
     image_path = os.path.join(folder_path, image_file)
     img = Image.open(image_path)
     img = img.resize((100, 100))  # Resize image to 100x100 pixels
+     # Apply blur effect to the image
+    img = img.filter(ImageFilter.GaussianBlur(radius=5))  # Apply blur with a specified radius (adjust as needed)
     
     # Display the image in the appropriate column
     col = columns[i % num_columns]  # Distribute images across columns
