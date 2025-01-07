@@ -39,4 +39,4 @@ for i, image_file in enumerate(image_files):
     
     # Display the image in the appropriate column
     col = columns[i % num_columns]  # Distribute images across columns
-    col.image(img, caption=image_file, use_column_width=False)
+    col.image(img, caption=image_file, use_container_width=False)
