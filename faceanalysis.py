@@ -1,34 +1,42 @@
 import streamlit as st
-import os
-from PIL import Image
 from deepface import DeepFace
-import tensorflow as tf
-# Define the folder path where your images are stored
-folder_path = 'glics'
+import json
 
-# Get a list of all files in the folder
-image_files = [f for f in os.listdir(folder_path) if f.endswith(('jpg', 'jpeg', 'png', 'gif', 'bmp'))]
+st.title("🎭 Facial Analysis Application")
 
-# Add title or description above the images
-st.markdown("### This is a row of faces with sentiment analysis")
+uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "webp"])
 
-# Define the number of columns in the grid
-num_columns = 3  # You can change this value based on how many columns you want
+if uploaded_file is not None:
+    img_path = uploaded_file.name
 
-# Create columns for the grid
-columns = st.columns([1] * num_columns)
+    with open(img_path, "wb") as f:
+        f.write(uploaded_file.getbuffer())
 
-# Loop through the image files and display them in a grid
-for i, image_file in enumerate(image_files):
-    # Open each image
-    image_path = os.path.join(folder_path, image_file)
-    img = Image.open(image_path)
-    img = img.resize((100, 100))  # Resize image to 100x100 pixels
-    
-    # Apply emotion detection using DeepFace
-    analysis = DeepFace.analyze(img, actions=['emotion'], enforce_detection=False)
-    dominant_emotion = analysis[0]['dominant_emotion']
-    
-    # Display the image and sentiment label
-    col = columns[i % num_columns]  # Distribute images across columns
-    col.image(img, caption=f"{image_file}\nSentiment: {dominant_emotion}", use_column_width=False)
+    try:
+        analysis = DeepFace.analyze(img_path, actions=['age', 'gender', 'race', 'emotion'])
+        
+        important_info = {
+            "Age": analysis[0]["age"],
+            "Gender": max(analysis[0]["gender"] , key=analysis[0]["gender"].get) ,
+            "Race": analysis[0]["dominant_race"],
+            "Emotion": analysis[0]["dominant_emotion"]
+        }
+
+        st.subheader("🌈 Analysis Results:")
+        for key, value in important_info.items():
+            color = {
+                "Age": "orange",
+                "Gender": "orange",
+                "Race": "orange",
+                "Emotion": "orange"
+            }.get(key, "black")
+            st.markdown(f"<span style='color:{color}; font-size: 20px;'><strong>{key}:</strong> {value}</span>", unsafe_allow_html=True)
+
+        st.image(uploaded_file, caption='Uploaded Image', use_column_width=True)
+
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
+
+st.markdown("---")
+st.markdown("This application uses the DeepFace library to analyze facial data such as age, gender, race, and emotion.")
+st.markdown("🌐 Developed by [Biplob D.](https://github.com/biplob004)")
