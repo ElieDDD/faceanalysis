@@ -2,20 +2,18 @@ import streamlit as st
 import os
 from PIL import Image
 
-st.title("AI Forensics row of faces")
-st.header("This is a row of faces")
-# Add custom CSS to reduce spacing and ensure no image cutoff
+# Add custom CSS to ensure content is not clipped or cut off
 st.markdown("""
     <style>
-        .stImage {
-            margin: 1px;
-            padding: 1px;
-        }
         .block-container {
-            padding: 1px;
+            padding-top: 30px;  /* Ensure space at the top */
+        }
+        .stImage {
+            margin: 0px;
+            padding: 0px;
         }
         .stApp {
-            overflow: hidden;  /* Prevent overflow issues */
+            overflow: visible;  /* Allow normal overflow */
         }
     </style>
 """, unsafe_allow_html=True)
@@ -26,13 +24,14 @@ folder_path = 'glics'
 # Get a list of all files in the folder
 image_files = [f for f in os.listdir(folder_path) if f.endswith(('jpg', 'jpeg', 'png', 'gif', 'bmp'))]
 
+# Add title or description above the images
+st.markdown("### This is a row of faces")
+
 # Define the number of columns in the grid
-num_columns = 10  # You can change this value based on how many columns you want
+num_columns = 3  # You can change this value based on how many columns you want
 
 # Create columns for the grid
 columns = st.columns([1] * num_columns)
-st.write("Here's our first attempt at using data to create a table:")
-# Loop through the image files and display them in a grid
 for i, image_file in enumerate(image_files):
     # Open and resize each image to 100x100
     image_path = os.path.join(folder_path, image_file)
