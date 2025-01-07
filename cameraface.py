@@ -1,107 +1,64 @@
-import cv2
 import streamlit as st
-import numpy as np
+import cv2
 from deepface import DeepFace
+import numpy as np
 
-# Function to analyze facial attributes using DeepFace
+# Set the page title
+st.title("Real-Time Webcam Analysis")
+
+# Streamlit sidebar
+st.sidebar.title("Settings")
+show_webcam = st.sidebar.checkbox("Open Webcam", value=True)
+
+# Function to analyze the frame using DeepFace
 def analyze_frame(frame):
-    result = DeepFace.analyze(img_path=frame, actions=['age', 'gender', 'race', 'emotion'],
-                              enforce_detection=False,
-                              detector_backend="opencv",
-                              align=True,
-                              silent=False)
-    return result
+    try:
+        analysis = DeepFace.analyze(frame, actions=['age', 'gender', 'race', 'emotion'], enforce_detection=False)
+        return analysis
+    except Exception as e:
+        return None
 
-def overlay_text_on_frame(frame, texts):
-    overlay = frame.copy()
-    alpha = 0.9  # Adjust the transparency of the overlay
-    cv2.rectangle(overlay, (0, 0), (frame.shape[1], 100), (255, 255, 255), -1)  # White rectangle
-    cv2.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame)
+# Open webcam if the checkbox is checked
+if show_webcam:
+    # Access the webcam
+    video_capture = cv2.VideoCapture(0)
 
-    text_position = 15 # Where the first text is put into the overlay
-    for text in texts:
-        cv2.putText(frame, text, (10, text_position), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
-        text_position += 20
+    # Display the webcam feed
+    st.text("Press 'Stop' in Streamlit UI to stop the webcam.")
+    stframe = st.empty()
 
-    return frame
-
-def facesentiment():
-    # st.title("Real-Time Facial Analysis with Streamlit")
-    # Create a VideoCapture object
-    cap = cv2.VideoCapture(0)
-    stframe = st.image([])  # Placeholder for the webcam feed
-
-    while True:
+    while video_capture.isOpened():
         # Capture frame-by-frame
-        ret, frame = cap.read()
+        ret, frame = video_capture.read()
+        if not ret:
+            st.error("Error accessing webcam!")
+            break
 
-        # Analyze the frame using DeepFace
-        result = analyze_frame(frame)
+        # Convert the frame to RGB
+        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-        # Extract the face coordinates
-        face_coordinates = result[0]["region"]
-        x, y, w, h = face_coordinates['x'], face_coordinates['y'], face_coordinates['w'], face_coordinates['h']
+        # Analyze the frame
+        analysis = analyze_frame(rgb_frame)
 
-        # Draw bounding box around the face
-        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-        text = f"{result[0]['dominant_emotion']}"
-        cv2.putText(frame, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+        if analysis:
+            # Display analysis results
+            st.sidebar.write("**Analysis Results**")
+            st.sidebar.write(f"Age: {analysis['age']}")
+            st.sidebar.write(f"Gender: {analysis['gender']}")
+            st.sidebar.write(f"Race: {analysis['dominant_race']}")
+            st.sidebar.write(f"Emotion: {analysis['dominant_emotion']}")
 
-        # Convert the BGR frame to RGB for Streamlit
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
-        # Overlay white rectangle with text on the frame
-        texts = [
-            f"Age: {result[0]['age']}",
-            f"Face Confidence: {round(result[0]['face_confidence'],3)}",
-            # f"Gender: {result[0]['dominant_gender']} {result[0]['gender'][result[0]['dominant_gender']]}",
-            f"Gender: {result[0]['dominant_gender']} {round(result[0]['gender'][result[0]['dominant_gender']], 3)}",
-            f"Race: {result[0]['dominant_race']}",
-            f"Dominant Emotion: {result[0]['dominant_emotion']} {round(result[0]['emotion'][result[0]['dominant_emotion']], 1)}",
-        ]
-
-        frame_with_overlay = overlay_text_on_frame(frame_rgb, texts)
+            # Add text overlay to the frame
+            cv2.putText(frame, f"Age: {analysis['age']}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            cv2.putText(frame, f"Gender: {analysis['gender']}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            cv2.putText(frame, f"Race: {analysis['dominant_race']}", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            cv2.putText(frame, f"Emotion: {analysis['dominant_emotion']}", (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
         # Display the frame in Streamlit
-        stframe.image(frame_with_overlay, channels="RGB")
+        stframe.image(frame, channels="BGR")
 
-    # Release the webcam and close all windows
-    cap.release()
+    # Release the webcam
+    video_capture.release()
     cv2.destroyAllWindows()
-
-def main():
-    # Face Analysis Application #
-    # st.title("Real Time Face Emotion Detection Application")
-    activities = ["Webcam Face Detection", "About"]
-    choice = st.sidebar.selectbox("Select Activity", activities)
-    st.sidebar.markdown(
-        """ Developed by Shrimanta Satpati    
-            Email : satpatishrimanta@gmail.com  
-        """)
-    if choice == "Webcam Face Detection":
-        html_temp_home1 = """<div style="background-color:#6D7B8D;padding:10px">
-                                            <h4 style="color:white;text-align:center;">
-                                            Real time face emotion recognition of webcam feed using OpenCV, DeepFace and Streamlit.</h4>
-                                            </div>
-                                            </br>"""
-        st.markdown(html_temp_home1, unsafe_allow_html=True)
-        facesentiment()
-
-    elif choice == "About":
-        st.subheader("About this app")
-
-        html_temp4 = """
-                                     		<div style="background-color:#98AFC7;padding:10px">
-                                     		<h4 style="color:white;text-align:center;">This Application is developed by Shrimanta Satpati. </h4>
-                                     		<h4 style="color:white;text-align:center;">Thanks for Visiting</h4>
-                                     		</div>
-                                     		<br></br>
-                                     		<br></br>"""
-
-        st.markdown(html_temp4, unsafe_allow_html=True)
-
-    else:
-        pass
-
-if __name__ == "__main__":
-    main()
+else:
+    st.warning("Webcam is not enabled. Check the sidebar to enable it.")
