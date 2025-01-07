@@ -1,3 +1,7 @@
+#requirements.txt should be
+#streamlit
+#Pillow
+
 import streamlit as st
 import os
 from PIL import Image
