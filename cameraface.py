@@ -9,7 +9,7 @@ folder_path = 'glics'
 image_files = [f for f in os.listdir(folder_path) if f.endswith(('jpg', 'jpeg', 'png', 'gif', 'bmp'))]
 
 # Define the number of columns in the grid
-num_columns = 3  # You can change this value based on how many columns you want
+num_columns = 10  # You can change this value based on how many columns you want
 
 # Create columns for the grid
 columns = st.columns(num_columns)
