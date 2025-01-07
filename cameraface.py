@@ -3,6 +3,7 @@ import os
 from PIL import Image
 
 st.text("A row of faces")
+
 # Add custom CSS to reduce spacing and ensure no image cutoff
 st.markdown("""
     <style>
@@ -30,7 +31,7 @@ num_columns = 10  # You can change this value based on how many columns you want
 
 # Create columns for the grid
 columns = st.columns([1] * num_columns)
-
+st.write("Here's our first attempt at using data to create a table:")
 # Loop through the image files and display them in a grid
 for i, image_file in enumerate(image_files):
     # Open and resize each image to 100x100
