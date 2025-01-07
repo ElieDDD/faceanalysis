@@ -2,15 +2,18 @@ import streamlit as st
 import os
 from PIL import Image
 
-# Add custom CSS to reduce spacing
+# Add custom CSS to reduce spacing and ensure no image cutoff
 st.markdown("""
     <style>
         .stImage {
-            margin: 4px;
+            margin: 0px;
             padding: 0px;
         }
         .block-container {
             padding: 0px;
+        }
+        .stApp {
+            overflow: hidden;  /* Prevent overflow issues */
         }
     </style>
 """, unsafe_allow_html=True)
@@ -36,4 +39,4 @@ for i, image_file in enumerate(image_files):
     
     # Display the image in the appropriate column
     col = columns[i % num_columns]  # Distribute images across columns
-    col.image(img, "", 100)
+    col.image(img, caption=image_file, use_column_width=False)
