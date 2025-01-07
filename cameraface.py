@@ -6,7 +6,7 @@ from PIL import Image
 st.markdown("""
     <style>
         .stImage {
-            margin: 0px;
+            margin: 4px;
             padding: 0px;
         }
         .block-container {
