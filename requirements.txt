@@ -2,3 +2,4 @@ streamlit
 Pillow
 deepface
 numpy
+opencv-python-headless
