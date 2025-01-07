@@ -1,6 +1,10 @@
 import streamlit as st
 import numpy as np
 import tensorflow as tf
+
+st.title("TensorFlow Installation Check")
+
+st.write(f"TensorFlow version: {tf.__version__}")
 from tensorflow.keras.applications import ResNet50
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.resnet50 import preprocess_input, decode_predictions
