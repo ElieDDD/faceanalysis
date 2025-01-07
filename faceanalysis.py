@@ -2,7 +2,7 @@ import streamlit as st
 import os
 from PIL import Image
 from deepface import DeepFace
-
+import tensorflow as tf
 # Define the folder path where your images are stored
 folder_path = 'glics'
 
