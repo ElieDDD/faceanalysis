@@ -4,7 +4,7 @@ from PIL import Image
 from deepface import DeepFace
 
 # Define the folder path where your images are stored
-folder_path = 'path_to_your_images_folder'
+folder_path = 'glics'
 
 # Get a list of all files in the folder
 image_files = [f for f in os.listdir(folder_path) if f.endswith(('jpg', 'jpeg', 'png', 'gif', 'bmp'))]
