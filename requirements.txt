@@ -10,3 +10,10 @@ numpy==1.19.2
 pytesseract==0.3.7
 nltk==3.5
 scikit-learn
+freeglut3-dev
+libgtk2.0-dev
+libgl1-mesa-glx
+tesseract-ocr
+libtesseract-dev
+libtesseract4
+tesseract-ocr-all
