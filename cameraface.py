@@ -7,7 +7,7 @@ from PIL import Image, ImageFilter
 st.markdown("""
     <style>
         .block-container {
-            padding-top: 30px;  /* Ensure space at the top */
+            padding-top: 10px;  /* Ensure space at the top */
         }
         .stImage {
             margin: 0px;
@@ -30,7 +30,7 @@ image_files = [f for f in os.listdir(folder_path) if f.endswith(('jpg', 'jpeg', 
 st.markdown("### This is a row of faces")
 
 # Define the number of columns in the grid
-num_columns = 15  # You can change this value based on how many columns you want
+num_columns = 12  # You can change this value based on how many columns you want
 
 # Create columns for the grid
 columns = st.columns([1] * num_columns)
