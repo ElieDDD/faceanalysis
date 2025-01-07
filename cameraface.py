@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 from PIL import Image
+from PIL import Image, ImageFilter
 
 # Add custom CSS to ensure content is not clipped or cut off
 st.markdown("""
