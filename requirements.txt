@@ -3,3 +3,4 @@ Pillow
 deepface
 numpy
 opencv-python-headless
+tensorflow
