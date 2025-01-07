@@ -2,7 +2,7 @@ import streamlit as st
 import os
 from PIL import Image
 
-st.text(A row of faces")
+st.text("A row of faces")
 # Add custom CSS to reduce spacing and ensure no image cutoff
 st.markdown("""
     <style>
